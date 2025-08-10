@@ -39,7 +39,7 @@ module.exports = {
       } else {
         const embed = new EmbedBuilder()
           .setTitle(`Code Generator`)
-          .setDescription(codeBlock(language, text))
+          .setDescription(text)
           .setColor("Green")
           .setFooter({ text: `Powered by Google's Gemini AI` })
           .setTimestamp();

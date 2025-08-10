@@ -8,162 +8,77 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
-    .setDescription("Check command list of the bot"),
+    .setDescription("Check the full list of commands for the bot."),
   async execute(interaction, client) {
     const row = new ActionRowBuilder().addComponents(
       new StringSelectMenuBuilder()
         .setCustomId("help_select")
-        .setPlaceholder("Select Command List ")
+        .setPlaceholder("Select a command category")
         .addOptions([
           {
-            label: "Info",
-            emoji: "📄",
-            description: "Info commands list",
-            value: "help_info",
+            label: "General",
+            description: "General and informational commands.",
+            value: "help_general",
           },
           {
             label: "Generative AI",
-            emoji: "✨",
-            description: "Generative AI commands list",
+            description: "All AI-powered commands.",
             value: "help_genAI",
           },
           {
             label: "Developer Only",
-            emoji: "🔌",
-            description: "Developer Only commands list",
+            description: "Commands restricted to bot developers.",
             value: "help_dev",
           },
         ]),
     );
 
-    const embed = new EmbedBuilder()
+    const mainEmbed = new EmbedBuilder()
       .setTitle(`**Welcome To PyroQuanta!**`)
       .setDescription(
-        `
+        `Hello! I am a powerful AI assistant with a variety of commands to help you with your coding, writing, and more.
 
-    __**🔑 Key Features:**__
-
-     - **✨ AI Code Writer:** Generate code magic from your words!
-     - **💠 AI Translator:** Speak any language fluently with my help.
-    - **🔠 Grammarify AI:** Say goodbye to typos and awkward phrasing.
-     
-
-    __**📊  My Stats:**__
-    > **🚉 ${interaction.client.guilds.cache.size} Servers**
-    > **🙋 ${interaction.client.users.cache.size} Users**
-    > **#️⃣ ${interaction.client.channels.cache.size} Channels**
-
-    __**🦊 Don't forget:**__
-     Check the menu for a full list of commands!
-
-    __**📌 Links:**__
-    [Website](https://phoenixopentech.netlify.app/)
-    [Support](https://dsc.gg/phoenixopentech)
-    [Invite Me](https://discord.com/api/oauth2/authorize?client_id=1160118611021672448&permissions=964220475456&scope=bot)
-  `,
+Please use the menu below to browse through my commands.`
       )
       .setFooter({ text: "PyroQuanta" })
       .setTimestamp();
 
-    interaction.editReply({ embeds: [embed], components: [row] });
+    await interaction.editReply({ embeds: [mainEmbed], components: [row] });
 
-    const InfoEmbed = new EmbedBuilder()
+    const generalEmbed = new EmbedBuilder()
       .setTitle(`**PyroQuanta's Commands**`)
-      .setDescription("**📄 Info:**")
+      .setDescription("General Commands:")
       .addFields(
-        { name: "/ping", value: "- Check bot's latency", inline: false },
-        {
-          name: "/help",
-          value: "- Check command list for the bot",
-          inline: false,
-        },
+        { name: "/help", value: "Check the full list of bot commands.", inline: false },
+        { name: "/ping", value: "Check the bot's latency and responsiveness.", inline: false },
       )
       .setFooter({ text: `PyroQuanta` })
       .setTimestamp();
 
-    const GenAiEmbed = new EmbedBuilder()
+    const genAiEmbed = new EmbedBuilder()
       .setTitle(`**PyroQuanta's Commands**`)
-      .setDescription("**✨ Generative AI:**")
+      .setDescription("Generative AI Commands:")
       .addFields(
-        {
-          name: "/ask-pyroquanta",
-          value: "- Ask questions to PyroQuanta.",
-          inline: false,
-        },
-        {
-          name: "/code-write",
-          value: "- Write code for your project",
-          inline: false,
-        },
-        {
-          name: "/email-write",
-          value: "- Write emails for you",
-          inline: false,
-        },
-        {
-          name: "/grammarify-ai",
-          value:
-            "- Fix grammar mistakes in your text and make it more readable",
-          inline: false,
-        },
-        {
-          name: "/ai-translate",
-          value: "- Translate text to another language",
-          inline: false,
-        },
-        {
-          name: "/error-fixer",
-          value: "- Find errors in your code and fix it",
-          inline: false,
-        },
-        {
-          name: "/tone-changer",
-          value: "- Change tone of your text",
-          inline: false,
-        },
-        {
-          name: "/travel-planner",
-          value: "- Make a travel plan for your trip",
-          inline: false,
-        },
-        {
-          name: "/caption-writer",
-          value: "- Write a caption for your social post",
-          inline: false,
-        },
-        {
-          name: "/letter-writer",
-          value: "- Write letters for you",
-          inline: false,
-        },
-        {
-          name: "/report-writer",
-          value: "- Generate a professional report",
-          inline: false,
-        },
-        {
-          name: "/simplify",
-          value: "- Generate a simplify version of the prompt",
-          inline: false,
-        },
+        { name: "/ask", value: "Get an answer to your question from a powerful AI.", inline: false },
+        { name: "/code", value: "Generate a code snippet for a programming task.", inline: false },
+        { name: "/define", value: "Get a definition for a word or concept from the AI.", inline: false },
+        { name: "/fix", value: "Get help fixing an error in your code using a pop-up form.", inline: false },
+        { name: "/grammar", value: "Fix grammar mistakes and improve the readability of your text.", inline: false },
+        { name: "/simplify", value: "Simplify a complex idea, piece of code, or block of text.", inline: false },
+        { name: "/summarize", value: "Summarize a long block of text into a few key points.", inline: false },
+        { name: "/tone", value: "Change the tone of a piece of text to a selected style.", inline: false },
+        { name: "/translate", value: "Translate a block of text from one language to another.", inline: false },
+        { name: "/write", value: "Have the AI write a piece of text based on your instructions.", inline: false },
       )
       .setFooter({ text: `PyroQuanta` })
       .setTimestamp();
 
-    const DevEmbed = new EmbedBuilder()
+    const devEmbed = new EmbedBuilder()
       .setTitle(`**PyroQuanta's Commands**`)
-      .setDescription("**🔌 Developer Only:**")
+      .setDescription("Developer Only Commands:")
       .addFields(
-        {
-          name: "/eval",
-          value: "- Evaluate javascript code dynamically",
-          inline: false,
-        },
-        {
-          name: "/system-info",
-          value: "- Check bot's system info",
-          inline: false,
-        },
+        { name: "/eval", value: "Evaluate JavaScript code in a sandboxed environment.", inline: false },
+        { name: "/system-info", value: "Check the bot's system information and performance.", inline: false },
       )
       .setFooter({ text: `PyroQuanta` })
       .setTimestamp();
@@ -171,27 +86,27 @@ module.exports = {
     const collector = interaction.channel.createMessageComponentCollector({
       ComponentType: "SELECT_MENU",
       customId: "help_select",
-      time: "60000",
+      time: 60000,
     });
 
     collector.on("collect", async (collected) => {
       const value = collected.values[0];
 
-      if (value === "help_info") {
-        collected.reply({ embeds: [InfoEmbed] });
+      if (value === "help_general") {
+        await collected.reply({ embeds: [generalEmbed], ephemeral: true });
       }
 
       if (value === "help_genAI") {
-        collected.reply({ embeds: [GenAiEmbed] });
+        await collected.reply({ embeds: [genAiEmbed], ephemeral: true });
       }
 
       if (value === "help_dev") {
-        collected.reply({ embeds: [DevEmbed] });
+        await collected.reply({ embeds: [devEmbed], ephemeral: true });
       }
     });
 
-    collector.on("end", (collected) =>
-      console.log(`Collected ${collected.size} items`),
-    );
+    collector.on("end", () => {
+        // You could add a message here to indicate the menu has expired
+    });
   },
 };

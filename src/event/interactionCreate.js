@@ -36,7 +36,6 @@ module.exports = {
                 const response = await result.response;
                 const text = response.text();
 
-                // Check if the response is too long for an embed
                 const maxEmbedDescriptionLength = 4096;
                 if (text.length > maxEmbedDescriptionLength) {
                     await interaction.editReply({
@@ -82,6 +81,47 @@ module.exports = {
                     content: `Error: ${codeBlock("bash", error)}`,
                 });
             }
+        } else if (interaction.customId === 'summarizeModal') {
+            await interaction.deferReply({ ephemeral: false });
+
+            const textToSummarize = interaction.fields.getTextInputValue('textInput');
+            
+            try {
+                const prompt = `Summarize the following text into a few concise, key points. Provide only the summary in your response, with no extra conversational text or formatting. The original text is: "${textToSummarize}"`;
+
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                const summaryText = response.text();
+                
+                const maxEmbedDescriptionLength = 4096;
+                if (summaryText.length > maxEmbedDescriptionLength) {
+                    await interaction.editReply({
+                        content: `**AI Summarizer**\n\n${summaryText}`
+                    });
+                } else {
+                    const embed = new EmbedBuilder()
+                        .setTitle(`AI Summarizer`)
+                        .setDescription(summaryText)
+                        .setColor("Green")
+                        .setFooter({ text: `Powered by Google's Gemini AI` })
+                        .setTimestamp();
+
+                    await interaction.editReply({ embeds: [embed] });
+                }
+            } catch (error) {
+                console.error(error);
+                if (error.response && error.response.status === 400) {
+                    await interaction.editReply({
+                        content: "Your request was rejected due to a safety policy violation.",
+                        ephemeral: true,
+                    });
+                } else {
+                    await interaction.editReply({
+                        content: "An error occurred while trying to summarize the text. Please try again later.",
+                        ephemeral: true,
+                    });
+                }
+            }
         }
         return;
     }
@@ -97,8 +137,8 @@ module.exports = {
             });
         }
         
-        const commandsThatUseModals = ['fix', 'eval'];
-        if (!commandsThatUseModals.includes(command.data.name)) {
+        const commandsThatHandleOwnDeferral = ['fix', 'eval', 'summarize'];
+        if (!commandsThatHandleOwnDeferral.includes(command.data.name)) {
             await interaction.deferReply();
         }
 

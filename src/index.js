@@ -8,11 +8,11 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.DirectMessages,
         GatewayIntentBits.MessageContent,
-        // Add more intents as needed
     ],
 });
 
 client.commands = new Collection();
+client.activeSessions = new Map();
 
 // Event listener for when the bot is ready
 client.once(Events.ClientReady, c => {
@@ -49,6 +49,7 @@ client.once(Events.ClientReady, c => {
         }
         console.log(`➥ Loaded ${event.name} Event`);
     }
+    
 });
 
 client.login(config.bot.token);
