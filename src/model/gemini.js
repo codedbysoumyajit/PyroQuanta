@@ -3,8 +3,9 @@ const {
   HarmBlockThreshold,
   HarmCategory,
 } = require("@google/generative-ai");
-const config = require("./../../config/config.json");
+const config = require("./../../config/config.json"); // Import the config file
 
+// Use the API key from the config.json file
 const genAI = new GoogleGenerativeAI(config.bot.GEMINI_API_KEY);
 
 const safetySettings = [
@@ -26,6 +27,7 @@ const safetySettings = [
   },
 ];
 
-const model = genAI.getGenerativeModel({ model: `${config.settings.model}`, safetySettings });
+// Get the model name from the config file
+const model = genAI.getGenerativeModel({ model: config.settings.model, safetySettings });
 
 module.exports = model;

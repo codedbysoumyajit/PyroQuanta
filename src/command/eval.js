@@ -1,26 +1,34 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } = require('discord.js');
 const config = require("./../../config/config.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("eval")
-    .setDescription("Evaluate javascript code dynamically")
-    .addStringOption((option) =>
-      option
-        .setName("eval")
-        .setDescription("Javascript code to eval")
-        .setRequired(true),
-    ),
+    .setDescription("Evaluate JavaScript code in a sandboxed environment."),
   async execute(interaction, client) {
-    if (!config.settings.admin.includes(interaction.user.id))
-      return interaction.reply(`This command is only for developers`);
-
-    const code = interaction.options.getString("eval");
-    try {
-      const result = eval(code);
-      interaction.editReply(`Result: \`\`\`js\n${result}\`\`\``);
-    } catch (error) {
-      interaction.editReply(`Error: \`\`\`bash\n${error}\`\`\``);
+    // Only allow admins to use this command
+    if (!config.settings.admin.includes(interaction.user.id)) {
+      return await interaction.reply({
+        content: "This command is only for developers.",
+        ephemeral: true,
+      });
     }
+    
+    // Create the modal to collect the code
+    const modal = new ModalBuilder()
+      .setCustomId('evalCodeModal')
+      .setTitle('Evaluate JavaScript Code');
+
+    const codeInput = new TextInputBuilder()
+      .setCustomId('codeInput')
+      .setLabel("Paste the JavaScript code here")
+      .setStyle(TextInputStyle.Paragraph)
+      .setRequired(true);
+
+    const firstActionRow = new ActionRowBuilder().addComponents(codeInput);
+
+    modal.addComponents(firstActionRow);
+
+    await interaction.showModal(modal);
   },
 };
